@@ -12,18 +12,22 @@ public class MarkdownParse {
         int currentIndex = 0;
 
         // only runs the code if a link is found 
-        if(markdown.contains("(") && markdown.contains(")") ){
+        if(markdown.contains("(") && markdown.contains(")")){
         while(currentIndex < markdown.length()) {
             int nextOpenBracket = markdown.indexOf("[", currentIndex);
             int nextCloseBracket = markdown.indexOf("]", nextOpenBracket);
             int openParen = markdown.indexOf("(", nextCloseBracket);
             int closeParen = markdown.indexOf(")", openParen);
+            if (markdown.charAt(nextOpenBracket - 1) == '!') {
+                currentIndex = closeParen + 1;
+                continue;
+            }
             toReturn.add(markdown.substring(openParen + 1, closeParen));
             currentIndex = closeParen + 1;
-          //  System.out.println(currentIndex);
-
-        }}
-        else{
+           
+        }
+    }
+        if(toReturn.isEmpty()){
             toReturn.add("No links in this file");
         }
         return toReturn;
