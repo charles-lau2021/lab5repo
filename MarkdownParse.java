@@ -10,31 +10,32 @@ public class MarkdownParse {
         // find the next [, then find the ], then find the (, then take up to
         // the next )
         int currentIndex = 0;
-
-        // only runs the code if a link is found 
-        if(markdown.contains("(") && markdown.contains(")")){
         while(currentIndex < markdown.length()) {
             int nextOpenBracket = markdown.indexOf("[", currentIndex);
             int nextCloseBracket = markdown.indexOf("]", nextOpenBracket);
             int openParen = markdown.indexOf("(", nextCloseBracket);
             int closeParen = markdown.indexOf(")", openParen);
-            
-            if (markdown.charAt(nextOpenBracket - 1) == '!') {
-                currentIndex = closeParen + 1;
-                continue;
-            }
-            
-            toReturn.add(markdown.substring(openParen + 1, closeParen));
-            currentIndex = closeParen + 1;
-            
-            if (markdown.substring(closeParen + 1, markdown.length()).contains("[") == false){
+             
+            if (nextOpenBracket == -1) {
                 break;
             }
-           
-        }
-    }
-        if(toReturn.isEmpty()){
-            toReturn.add("No links in this file");
+            if(openParen != -1 && closeParen != -1 && nextOpenBracket == 0){
+                String subString = markdown.substring(openParen + 1, closeParen);
+                if(markdown.charAt(0) != '!' && !subString.contains(" ")){
+                    toReturn.add(subString);
+                }
+                currentIndex = closeParen + 1;
+            }
+            else if (openParen != -1 && closeParen != -1) {
+                String subString = markdown.substring(openParen + 1, closeParen);
+                if(markdown.charAt(nextOpenBracket - 1) != '!' && !subString.contains(" ")){
+                    toReturn.add(subString);
+                }
+                currentIndex = closeParen + 1;
+            }
+            else{
+                currentIndex = nextCloseBracket + 1;
+             }
         }
         return toReturn;
     }
